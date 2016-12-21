@@ -1,15 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import certifi, urllib3, re, os
+import argparse
+import urllib3, certifi
+import re
+import os, sys
 
 from pytube import YouTube
 
-# Download location (has to exist), filename conflicts not resolved yet
-DLDir = "./"
+parser = argparse.ArgumentParser(description="Download a YouTube playlist")
 
-# Default list URL
-listURL = "https://www.youtube.com/watch?v=k6U-i4gXkLM&list=PL57FCE46F714A03BC"
+parser.add_argument("--url", metavar="url",
+        dest="listURL",
+        type=str,
+        help="The playlist's URL",
+        default="https://www.youtube.com/watch?v=k6U-i4gXkLM&list=PL57FCE46F714A03BC"
+        )
+
+parser.add_argument("-C", metavar="dir",
+        dest="DLDir",
+        type=str,
+        help="Destination directory (has to exist)",
+        default="./"
+        )
+
+args = parser.parse_args()
+
+listURL = args.listURL
+DLDir = args.DLDir
+
+if not os.path.exists(DLDir):
+    sys.stderr.write("%s: No such file or directory" % DLDir)
+    exit(2) # ENOENT
 
 http = urllib3.PoolManager(
         cert_reqs = "CERT_REQUIRED",
@@ -18,15 +40,12 @@ http = urllib3.PoolManager(
 
 request = http.request("GET", listURL)
 
-# match CSS classes of playlist items
-pattern = re.compile(r'<a href="(.+?)&.+?"\s*class="\s*spf-link\s*playlist-video\s*clearfix\s*yt-uix-sessionlink\s*spf-link\s*".+?>')
-
 if request.status != 200:
-    print("Request returned error No. %d" % request.status)
+    sys.stderr.write("Request failed with status No. %d" % request.status)
     exit(1)
 
-if not os.path.exists(DLDir):
-    os.mkdir(DLDir)
+# Match CSS classes of playlist items
+pattern = re.compile(r'<a href="(.+?)&.+?"\s*class="\s*spf-link\s*playlist-video\s*clearfix\s*yt-uix-sessionlink\s*spf-link\s*".+?>')
 
 vIDs = pattern.findall(request.data.decode())
 
@@ -35,25 +54,33 @@ count = len(vIDs)
 
 for vID in vIDs:
     vURL = "https://youtube.com" + vID
-    print("[%d/%d] Found " % (i, count) + vURL)
-    print("Downloading...")
 
     yt = YouTube(vURL)
     DLFile = DLDir + yt.filename
+    print("[%d/%d] Found \"%s\"" % (i, count, yt.filename))
 
     dupCheck = DLFile + ".mp4"
-    copy_n = 1
+    nDup = 0
 
-    # Add an incrementing suffix if the file exists
+    # Dodge duplicates with a suffix
     while(os.path.exists(dupCheck)):
-        dupCheck = DLFile + "(%d)" % copy_n + ".mp4"
-        copy_n += 1
+        nDup += 1
+        dupCheck = DLFile + "(%d)" % nDup + ".mp4"
 
     yt.set_filename(dupCheck)
 
-    yt.filter('mp4')[-1] # Select the best quality
-    video = yt.get('mp4')
+    # Select the best quality
+    yt.filter('mp4')[-1]
 
+    if nDup:
+        print("Original name taken, saving to \"%s\"" % dupCheck)
+    else:
+        print("Saving to \"%s\"" % dupCheck)
+
+    print("Downloading...\n")
+
+    video = yt.get('mp4')
     video.download(dupCheck)
-    print(dupCheck + " done.")
+
+
     i += 1
