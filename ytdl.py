@@ -65,7 +65,7 @@ for vID in vIDs:
     # Dodge duplicates with a suffix
     while(os.path.exists(dupCheck)):
         nDup += 1
-        dupCheck = DLFile + "(%d)" % nDup + ".mp4"
+        dupCheck = "%s(%d).mp4" % (DLFile, nDup)
 
     yt.set_filename(dupCheck)
 
