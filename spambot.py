@@ -4,7 +4,7 @@
 import argparse
 import urllib3, certifi
 import re
-from sys import stderr # Rid "|" pipe users of garbage in output
+from sys import stderr # Rid "|" users of garbage in stdout
 
 parser = argparse.ArgumentParser(
         description="Extract e-mail addresses from a website.")
@@ -53,10 +53,10 @@ elif(count):
     stderr.write("Found 1 Address:\n")
 else:
     stderr.write("No e-mail addresses found.\n")
-    # grep exits non-zero without matches, following
-    # this convention seems reasonable
+    # Following grep's "no matches -> non-zero exit" convention
     exit(1)
 
 stderr.flush()
+
 for email in emails:
     print("%s...%s@%s"% (email[0][0], email[0][-1], email[1]))
