@@ -15,6 +15,13 @@ parser.add_argument("--url", metavar="url",
         default="https://www.wmi.amu.edu.pl/pl/pracownicy"
         )
 
+# TODO
+# parser.add_argument("-o", metavar="output_file",
+        # type=str,
+        # help="save to output_file",
+        # )
+
+
 args = parser.parse_args()
 
 http = urllib3.PoolManager(
