@@ -7,8 +7,14 @@ import argparse
 import os
 import re
 
-parser = argparse.ArgumentParser(description="Rename TV show related files")
-parser.add_argument("--dir", default=".")
+parser = argparse.ArgumentParser(description="Rename TV show-related files.")
+parser.add_argument(
+        "--dir",
+        default=".",
+        metavar="dir",
+        help="do the renaming in dir"
+        )
+
 args = parser.parse_args()
 
 episodes = os.listdir(args.dir)
@@ -17,11 +23,9 @@ pattern = re.compile(r".*[sS](\d+)[eE]0*(\d+).*\.(\w+)$")
 
 i = 0
 for episode in episodes:
-
     match = pattern.match(episode)
 
     if match:
-
         nEp = match.group(2)
         extension = match.group(3)
 
