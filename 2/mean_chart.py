@@ -9,5 +9,6 @@ df = pd.read_csv("chart_data.csv")
 
 for year, records in df.groupby(df.year):
     plt.plot(year, records.grade.mean(), "g^")
+    plt.axis([df.year.min(), df.year.max(), 2, 5])
 
 plt.show()
