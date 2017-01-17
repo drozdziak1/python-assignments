@@ -6,6 +6,7 @@
 def player_choose():
     while True:
         choice = int(input("\nEnter 1, 2 or 3 matches to remove: "))
+        print('\n')
         if choice in range(1,4):
             return choice
 
@@ -15,7 +16,8 @@ def cpu_choose(matches_left):
 matches_left = 40
 
 print("There's 40 matches on the table. You and CPU are allowed to remove 1-3\n"
-        "matches from the pile each round. The player with no matches left to take loses!")
+        "matches from the pile each round. The player with no matches left to"
+        "take loses!\n")
 
 if (input("Would you like to make the first move? *wink* (Y/n) ") != "n"):
     player_choice = player_choose()
