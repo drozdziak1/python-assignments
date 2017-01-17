@@ -11,6 +11,7 @@ def player_choose():
             return choice
 
 def cpu_choose(matches_left):
+    # Complement positive modulo or delay the inevitable
     return matches_left % 4 or 1
 
 matches_left = 40
