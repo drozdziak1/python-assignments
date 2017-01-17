@@ -5,7 +5,7 @@ import pandas
 
 df = pandas.read_csv("http://samplecsvs.s3.amazonaws.com/Sacramentorealestatetransactions.csv")
 
-ad1 = df[df.beds > 4].sort("beds", ascending=0) #desc order for easier checking
+ad1 = df[df.beds > 4].sort("beds", ascending=0) # desc order for easier checking
 print("Ad1:\n", ad1[["street", "city", "zip", "state", "beds"]])
 
 ad2 = df["price"].sum()
