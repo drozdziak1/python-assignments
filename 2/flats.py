@@ -15,4 +15,4 @@ print("Ad2: $%d" % ad2)
 
 ad3 = df[df.sq__ft < 900].sort("sq__ft", ascending=1)
 ad3 = ad3.reset_index(drop=True)
-print("Ad3:\n", ad3[["street", "city", "zip", "state", "sq__ft"]][1:])
+print("Ad3:\n", ad3[["street", "city", "zip", "state", "sq__ft"]])
